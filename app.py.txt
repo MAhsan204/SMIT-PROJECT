@@ -1,0 +1,52 @@
+	import pandas as pd
+
+df = pd.read_csv('transformed_data.csv', encoding='latin1')
+
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10,5))
+for cat, data in df.groupby('Category'):
+    data['Price'].plot(kind='kde', label=cat)
+
+plt.title("Price Distribution per Category")
+plt.xlabel("Price")
+plt.legend()
+plt.show()
+
+
+plt.figure(figsize=(7,5))
+plt.scatter(df['Price'], df['Rating'])
+plt.xlabel("Price")
+plt.ylabel("Rating")
+plt.title("Rating vs Price Correlation")
+plt.show()
+
+
+# Price ko numeric banao
+df['Price'] = pd.to_numeric(df['Price'], errors='coerce')
+
+# Per category average price
+avg_price = df.groupby('Category')['Price'].mean()
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10,5))
+avg_price.plot(kind='bar')
+
+plt.title("Average Price per Category")
+plt.ylabel("Price")
+plt.xlabel("Category")
+plt.show()
+	
+
+
+df['value_score'] = df['Rating'] / df['Price']
+
+best_value = df.groupby('Category')['value_score'].mean().sort_values(ascending=False)
+
+plt.figure(figsize=(8,5))
+best_value.plot(kind='bar')
+plt.title("Best Value Score per Category")
+plt.ylabel("Value Score (Rating / Price)")
+plt.show()
